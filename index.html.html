@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teen Vibe Character Game</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: #001f3d;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 720px;
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 25px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Dancing Script', cursive;
+    font-size: 42px;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+/* Progress bar */
+.progress {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: white;
+    transition: width 0.4s ease;
+}
+
+/* Questions */
+.question {
+    margin-bottom: 22px;
+    animation: fadeIn 0.6s ease;
+}
+
+.question p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.options {
+    display: flex;
+    gap: 15px;
+}
+
+.options button {
+    flex: 1;
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Playfair Display', serif;
+    transition: all 0.3s;
+}
+
+.options button:hover {
+    background: white;
+    color: #001f3d;
+}
+
+/* Submit */
+.submit {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    background: white;
+    color: #001f3d;
+    border: none;
+    border-radius: 35px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Result */
+.result {
+    margin-top: 30px;
+    text-align: center;
+    display: none;
+}
+
+.result h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 38px;
+}
+
+.share {
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>✨ Teen Vibe Poll ✨</h1>
+    <div class="subtitle">This or That • Discover Your Character</div>
+
+    <div class="progress">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div id="quiz"></div>
+
+    <button class="submit" onclick="showResult()">Reveal My Character ✨</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+const questions = [
+["Oversized hoodie", "Crop top"],
+["Sneakers", "Sandals"],
+["Chocolate", "Chips"],
+["Iced coffee", "Hot chocolate"],
+["Summer", "Winter"],
+["Beach day", "Mountain trip"],
+["Netflix night", "Party night"],
+["Late night talks", "Early morning walks"],
+["Soft pastels", "Dark aesthetics"],
+["Books", "Music"],
+["Photos", "Videos"],
+["Stay home", "Go out"],
+["Planner", "Go with the flow"],
+["Rainy days", "Sunny days"],
+["Instagram", "Pinterest"],
+["Street style", "Minimal style"],
+["Spicy snacks", "Sweet snacks"],
+["Gold jewellery", "Silver jewellery"],
+["Daydreaming", "Goal setting"],
+["Calm vibes", "Bold vibes"]
+];
+
+let scoreA = 0;
+let scoreB = 0;
+let answered = 0;
+
+const quizDiv = document.getElementById("quiz");
+const progress = document.getElementById("progress");
+
+questions.forEach((q, i) => {
+    const div = document.createElement("div");
+    div.className = "question";
+    div.innerHTML = `
+        <p>${i + 1}. ${q[0]} or ${q[1]}?</p>
+        <div class="options">
+            <button onclick="choose('A', this)">${q[0]}</button>
+            <button onclick="choose('B', this)">${q[1]}</button>
+        </div>
+    `;
+    quizDiv.appendChild(div);
+});
+
+function choose(type, btn) {
+    if (btn.classList.contains("chosen")) return;
+
+    btn.classList.add("chosen");
+    btn.parentElement.querySelectorAll("button").forEach(b => b.disabled = true);
+
+    if (type === "A") scoreA++;
+    else scoreB++;
+
+    answered++;
+    progress.style.width = (answered / questions.length) * 100 + "%";
+}
+
+function showResult() {
+    const resultDiv = document.getElementById("result");
+    resultDiv.style.display = "block";
+
+    if (scoreA > scoreB) {
+        resultDiv.innerHTML = `
+            <h2>🌙 The Calm Dreamer</h2>
+            <p>You are gentle, creative, and emotionally aware.<br>
+            You love peace, aesthetics, and deep connections.</p>
+            <div class="share">✨ Screenshot & share your calm vibe ✨</div>
+        `;
+    } 
+    else if (scoreB > scoreA) {
+        resultDiv.innerHTML = `
+            <h2>🔥 The Bold Explorer</h2>
+            <p>You are confident, expressive, and adventurous.<br>
+            You love energy, trends, and standing out.</p>
+            <div class="share">✨ Screenshot & share your bold energy ✨</div>
+        `;
+    } 
+    else {
+        resultDiv.innerHTML = `
+            <h2>⭐ The Balanced Star ⭐</h2>
+            <p>You are the perfect mix of calm and confidence.<br>
+            You adapt easily and shine in every situation.</p>
+            <div class="share">✨ Screenshot & share your balanced glow ✨</div>
+        `;
+    }
+
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+</script>
+
+</body>
+</html>
